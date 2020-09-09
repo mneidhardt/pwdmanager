@@ -61,7 +61,8 @@ public class MenuBar implements ActionListener {
 	      } else if (e.getActionCommand() == "New entry") {
 	    	  pwdman.addPassworditem(newEntry());
 	      } else if (e.getActionCommand() == "Generate JSON") {
-	    	  pwdman.generateJSON();
+	    	  TextDialog td = new TextDialog("Showing JSON", true, pwdman.generateJSON());
+	    	  td.setVisible(true);
 	      } else if (e.getActionCommand() == "Generate password") {
 	    	  generatePassword();
 	      }

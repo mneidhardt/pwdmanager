@@ -16,7 +16,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -25,8 +24,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
-
-import org.apache.commons.io.FileUtils;
 
 public class PwdManager extends JPanel {
 	private static final long serialVersionUID = 5024032558086870774L;
@@ -216,23 +213,9 @@ public class PwdManager extends JPanel {
     	printDebugData(table);
     }
     
-    public void generateJSON() {
-    	String filename = "pwdman.DECRYPT_AND_DELETE_ME.json";
-    	try {
-    		FileUtils.writeStringToFile(new File(filename), decrypteddata + System.getProperty("line.separator"), outcharset);
-    	} catch (IOException iex) {
-    		System.err.println("Failed to write to file: " + iex.getMessage());
-    		JOptionPane.showMessageDialog(null, "Failed to write JSON to file called " + filename);
-    	}
+    public String generateJSON() {
+    	return decrypteddata;
     }
-
-	private void writeToFile(byte[] data, String filename) throws IOException {
-		FileOutputStream out = new FileOutputStream(new File(filename));
-		out.write(data);
-
-		out.flush();
-		out.close();
-	}
 
     private void printDebugData(JTable table) {
         int numRows = table.getRowCount();
