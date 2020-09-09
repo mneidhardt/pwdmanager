@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class DataParserTest {
 	private final String testinputA = "{\n" + 
-			"  \"data\" : [\n" + 
+			"  'data' : [\n" + 
 			"    { \"title\":\"Gmail\", \"userid\":\"dummy@gmail.com\", \"password\":\"unsafe\", \"url\":\"https://accounts.google.com/\"},\n" + 
 			"    { \"title\":\"Facebook\", \"userid\":\"dummy@gmail.com\", \"password\":\"alsoUnsafe\", \"url\":\"https://www.facebook.com/\"}\n" + 
 			"  ]\n" + 
@@ -18,20 +18,26 @@ public class DataParserTest {
 
 	private final String testinputB = "{ \"title\":\"mail\" }";
 	
-	@Test
-	public void test0() {
-		DataParser parser = new DataParser();
-		JSONObject jo = new JSONObject(testinputB);
-		assertEquals(parser.getString(jo, "title"), "mail");
-		
-	}
 
 	@Test
 	public void test1() {
 		
 		try {
-			DataParser parser = new DataParser();
-			Object[][] data = parser.getFromJSON(testinputA);
+			DataParser parser = new DataParser(testinputA);
+			String data = parser.getDecryptedData();
+			assertTrue(data.length() > 0);
+		} catch (Exception ex) {
+			fail("Exception: " + ex.getMessage());
+		}
+
+	}
+	
+	@Test
+	public void test2() {
+				
+		try {
+			DataParser parser = new DataParser(testinputA);
+			Object[][] data = parser.getTabledata();
 			assertEquals(data.length, 2);
 			assertEquals(data[0].length, 4);
 			
@@ -44,6 +50,26 @@ public class DataParserTest {
 			assertEquals(data[1][1], "dummy@gmail.com");
 			assertEquals(data[1][2], "alsoUnsafe");
 			assertEquals(data[1][3], "https://www.facebook.com/");
+		} catch (UnsupportedEncodingException ue) {
+			fail("Exception: " + ue.getMessage());
+		} catch (IOException ie) {
+			fail("Exception: " + ie.getMessage());
+		}
+	}
+	
+	@Test
+	public void test3() {
+				
+		try {
+			DataParser parser = new DataParser(testinputA);
+			Object[][] data = parser.getTabledata();
+			assertEquals(data.length, 2);
+			assertEquals(data[0].length, 4);
+			
+			parser.addEntry();
+			Object[][] data2 = parser.getTabledata();
+			assertEquals(data2.length, 3);
+			
 		} catch (UnsupportedEncodingException ue) {
 			fail("Exception: " + ue.getMessage());
 		} catch (IOException ie) {

@@ -6,8 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 class TextDialog extends JDialog implements ActionListener, WindowListener {
+	private static final long serialVersionUID = 3023825305098512950L;
 
-	TextDialog(String title, boolean modal, String pscode) {
+	TextDialog(String title, boolean modal, String content) {
 		//super(cr, title, modal);
 
 		//CENTER
@@ -15,7 +16,7 @@ class TextDialog extends JDialog implements ActionListener, WindowListener {
 		//JTabbedPane tabbedPane = new JTabbedPane();
 		centerPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
-		JEditorPane psPane = new JEditorPane("text/plain", pscode);
+		JEditorPane psPane = new JEditorPane("text/plain", content);
 		JScrollPane psPane2 = new JScrollPane(psPane);
 		psPane2.setPreferredSize(new Dimension(1200, 1200));
 

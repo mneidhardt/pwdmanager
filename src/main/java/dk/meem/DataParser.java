@@ -5,10 +5,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-/* Class that understands the format that usernames, passwords etc is stored in.
+/* Class that holds the decrypted data.
+ * It also understands the format that usernames, passwords etc is stored in.
  * Currently only JSON.
  */
 public class DataParser {
+	private final JSONArray arraydata;
 	
 	/** Reads an encrypted password file stored as JSON.
 	 * @param encryptedfilename
@@ -17,38 +19,54 @@ public class DataParser {
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException
 	 */
-	public Object[][] getFromJSON(String decrypteddata) throws UnsupportedEncodingException, IOException  {
+	
+	public DataParser(String decrypteddata) {
 		JSONObject rawdata = new JSONObject(decrypteddata);
-		JSONArray data = rawdata.getJSONArray("data");
-		
+		this.arraydata = rawdata.getJSONArray("data");		
+	}
+	
+	public Object[][] getTabledata() throws UnsupportedEncodingException, IOException  {
 		int columns = 0;
 		
-		if (data.length() > 0) {
-			columns = data.getJSONObject(0).length();
+		if (arraydata.length() > 0) {
+			columns = arraydata.getJSONObject(0).length();
 			if (columns < 1) {
 				throw new IOException("Input file is corrupted.");
 			}
 		} else {
 			throw new IOException("No data in input file.");
 		}
+		
+		return populateArray(arraydata, columns);
+	}
+	
+	public Object[][] populateArray(JSONArray data, int columns) {
 		Object[][] result = new Object[data.length()][columns];
 		
 		for (int i=0; i<data.length(); i++) {
-			JSONObject pwd = data.getJSONObject(i);
-			result[i][0] = this.getString(pwd, "title");
-			result[i][1] = this.getString(pwd, "userid");
-			result[i][2] = this.getString(pwd, "password");
-			result[i][3] = this.getString(pwd, "url");
+			JSONObject entry = data.getJSONObject(i);
+			result[i][0] = entry.opt("title");
+			result[i][1] = entry.opt("userid");
+			result[i][2] = entry.opt("password");
+			result[i][3] = entry.opt("url");
 		}
 
 		return result;
 	}
+		
+	public void addEntry() {
+		JSONObject newentry = new JSONObject();
+        newentry.put("title", "");
+        newentry.put("userid", "");
+        newentry.put("password", "");
+        newentry.put("url", "");
+        
+        this.arraydata.put(newentry);
+	}
 	
-	public String getString(JSONObject obj, String key) {
-		if (obj.has(key)) {
-			return obj.getString(key);
-		} else {
-			return "";
-		}
+	public String getDecryptedData() {
+		JSONObject data = new JSONObject();
+		data.put("data", this.arraydata);
+		return data.toString();
 	}
 }

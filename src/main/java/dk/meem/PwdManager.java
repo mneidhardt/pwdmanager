@@ -34,9 +34,8 @@ public class PwdManager extends JPanel {
     private static final String encryptedpasswordfile = basepath + "/pwd.json.gpg";
     private static final long delaybeforeclipboardcleared = 25;
     private static final int maxattempts=3;
-    private static final String outcharset = "UTF-8";
     private JTable table;
-    private String decrypteddata;
+    private DataParser parser;
 
     //public PwdManager() throws UnsupportedEncodingException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
     public PwdManager() throws IOException {
@@ -54,9 +53,8 @@ public class PwdManager extends JPanel {
 		        char[] masterpassword = getPassword();
 		        
 		        Runcommand rc = new Runcommand(decryptcmd);
-		        decrypteddata = rc.decrypt(encryptedpasswordfile, new String(masterpassword));
-		        DataParser parser = new DataParser();
-				final Object[][] data = parser.getFromJSON(decrypteddata);
+		        this.parser = new DataParser(rc.decrypt(encryptedpasswordfile, new String(masterpassword)));
+				final Object[][] data = parser.getTabledata();
 				
 				/* By default I sort the array by Titel. User has option later on to sort
 				*  by any column they wish.
@@ -76,7 +74,6 @@ public class PwdManager extends JPanel {
 				}
 
 				createTable(columnnames, data, passwords);
-				//MyTable tbl = new MyTable(columnnames, data, passwords);
 				break;
 			} catch (IOException iex) {
 				System.err.println("count=" + count + " max=" + maxattempts);
@@ -91,7 +88,6 @@ public class PwdManager extends JPanel {
     }
     
     private void createTable(String[] columnnames, Object[][] data, final String[] passwords) {
-        //final JTable table = new JTable(new PwdTableModel(columnnames, data));
         table = new JTable(new PwdTableModel(columnnames, data));
         table.setAutoCreateRowSorter(true);
         table.setPreferredScrollableViewportSize(new Dimension(700, 700));
@@ -204,7 +200,7 @@ public class PwdManager extends JPanel {
             }
         };
         pane.createDialog(null, "Password").setVisible(true);
-        //return passwordField.getPassword().length == 0 ? null : new String(passwordField.getPassword());
+
         return passwordField.getPassword();
     }
     
@@ -214,7 +210,8 @@ public class PwdManager extends JPanel {
     }
     
     public String generateJSON() {
-    	return decrypteddata;
+    	parser.addEntry();
+    	return parser.getDecryptedData();
     }
 
     private void printDebugData(JTable table) {
