@@ -3,7 +3,7 @@ package dk.meem;
 import javax.swing.table.AbstractTableModel;
 
 class PwdTableModel extends AbstractTableModel {
-    private boolean DEBUG = false;
+	private static final long serialVersionUID = 4061363501472280143L;
     private final Object[][] data;
     final String[] columnNames;
     

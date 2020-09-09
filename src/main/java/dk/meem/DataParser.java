@@ -2,18 +2,11 @@ package dk.meem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-/* Class that understands the format that usernames, passwords etc is tored in.
- * This could be JSON or CSV or possibly something else (in the future).
+/* Class that understands the format that usernames, passwords etc is stored in.
+ * Currently only JSON.
  */
 public class DataParser {
 	
@@ -57,36 +50,5 @@ public class DataParser {
 		} else {
 			return "";
 		}
-	}
-	
-	/** Reads an encrypted password file stored as CSV.
-	 * @param encryptedfilename
-	 * @param password
-	 * @return
-	 */
-	public Object[][] getFromCSV(String decrypteddata) {
-		final int fieldsperline = 4;
-
-		String[] lines = decrypteddata.split("\\n");
-
-		Object[][] result = new Object[lines.length][fieldsperline];
-
-		for (int rid = 0; rid < lines.length; rid++) {
-			List<String> row = new ArrayList<String>();
-
-			int cid = 0;
-			for (String col : lines[rid].split("\\s+", fieldsperline)) {
-				row.add(col);
-				result[rid][cid] = col;
-				++cid;
-			}
-
-			// Make sure all fieldsperline fields on each line contain something:
-			// for (int i=cid; i<fieldsperline; i++) {
-			// result[rid][i] = "";
-			// }
-
-		}
-		return result;
 	}
 }

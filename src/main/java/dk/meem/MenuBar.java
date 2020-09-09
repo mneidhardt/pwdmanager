@@ -38,9 +38,9 @@ public class MenuBar implements ActionListener {
 		newEntry.addActionListener(this);
 		fileMenu.add(newEntry);
 
-		/*JMenuItem fileSave = new JMenuItem("Save file");
-		fileSave.addActionListener(this);
-		fileMenu.add(fileSave);*/
+		JMenuItem generateJSON = new JMenuItem("Generate JSON");
+		generateJSON.addActionListener(this);
+		fileMenu.add(generateJSON);
 		
 		JMenuItem genPwd = new JMenuItem("Generate password");
 		genPwd.addActionListener(this);
@@ -60,6 +60,8 @@ public class MenuBar implements ActionListener {
 	          System.exit(0);
 	      } else if (e.getActionCommand() == "New entry") {
 	    	  pwdman.addPassworditem(newEntry());
+	      } else if (e.getActionCommand() == "Generate JSON") {
+	    	  pwdman.generateJSON();
 	      } else if (e.getActionCommand() == "Generate password") {
 	    	  generatePassword();
 	      }

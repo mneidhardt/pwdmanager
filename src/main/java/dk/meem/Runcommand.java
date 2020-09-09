@@ -4,8 +4,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,8 +11,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Runcommand {
 	private String cmd;
@@ -22,12 +18,6 @@ public class Runcommand {
 	public Runcommand(String cmd) throws IOException {
 		this.cmd = cmd;
 	}
-
-	/*public static void main(String[] args) throws UnsupportedEncodingException, IOException {
-		
-		System.out.println(encrypt("mic", "hoohoo"));
-		System.out.println(decrypt("mic.gpg", "hoohoo"));
-	}*/
 	
 	/* Virker ikke - gpg kan ikke tage både pwd og text fra stdin...
        Jeg kan i hvert fald ikke finde ud af hvordan...

@@ -26,9 +26,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.io.FileUtils;
+
 public class PwdManager extends JPanel {
 	private static final long serialVersionUID = 5024032558086870774L;
-	private boolean DEBUG = false;
     private boolean ALLOW_COLUMN_SELECTION = false;
     private boolean ALLOW_ROW_SELECTION = true;
     private String decryptcmd = "/usr/local/bin/gpg";
@@ -36,7 +37,9 @@ public class PwdManager extends JPanel {
     private static final String encryptedpasswordfile = basepath + "/pwd.json.gpg";
     private static final long delaybeforeclipboardcleared = 25;
     private static final int maxattempts=3;
+    private static final String outcharset = "UTF-8";
     private JTable table;
+    private String decrypteddata;
 
     //public PwdManager() throws UnsupportedEncodingException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
     public PwdManager() throws IOException {
@@ -54,7 +57,7 @@ public class PwdManager extends JPanel {
 		        char[] masterpassword = getPassword();
 		        
 		        Runcommand rc = new Runcommand(decryptcmd);
-		        final String decrypteddata = rc.decrypt(encryptedpasswordfile, new String(masterpassword));
+		        decrypteddata = rc.decrypt(encryptedpasswordfile, new String(masterpassword));
 		        DataParser parser = new DataParser();
 				final Object[][] data = parser.getFromJSON(decrypteddata);
 				
@@ -211,6 +214,16 @@ public class PwdManager extends JPanel {
     public void addPassworditem(String userid) {
     	System.out.println("Got new entry: " + userid);
     	printDebugData(table);
+    }
+    
+    public void generateJSON() {
+    	String filename = "pwdman.DECRYPT_AND_DELETE_ME.json";
+    	try {
+    		FileUtils.writeStringToFile(new File(filename), decrypteddata + System.getProperty("line.separator"), outcharset);
+    	} catch (IOException iex) {
+    		System.err.println("Failed to write to file: " + iex.getMessage());
+    		JOptionPane.showMessageDialog(null, "Failed to write JSON to file called " + filename);
+    	}
     }
 
 	private void writeToFile(byte[] data, String filename) throws IOException {
